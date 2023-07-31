@@ -76,5 +76,5 @@ def check_service_versions():
 
     
 
-    for service_l in service_library: 
-        print("I am printing from Service Library " + service_l.name)
+    # for service_l in service_library: 
+    #     print("I am printing from Service Library " + service_l.name)
