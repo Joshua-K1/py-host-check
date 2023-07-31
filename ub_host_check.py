@@ -28,18 +28,22 @@ def get_ubuntu_host_info():
 ## define service class
 class Services(object):
     def __init__(self, name, loaded, active, pid, memory, cpu):
-        self.name = name
         self.loaded = loaded
+        self.name = name
         self.active = active
         self.pid = pid
         self.memory = memory
         self.cpu = cpu
 
+    def print_info(self): 
+        table = [[self.name], [self.loaded], [self.active], [self.pid], [self.memory], [self.cpu]]
+
 def check_service_versions():
     print("Checking Service Versions...")
 
-    for single_service in service_list:
-        for line in os.popen(f"systemctl status {single_service}"):
+    for s_name in service_list:
+        print("Service name is: " + s_name)
+        for line in os.popen(f"systemctl status {s_name}"):
             if line.strip():
                 # include with flag for debug output?
                 # service_status = line.split()
@@ -48,33 +52,32 @@ def check_service_versions():
                 # if line contains active, print it
                 if "Active" in line:
                     s_active = line.split()
+                    s_active = s_active[1]
                     print(s_active)
 
-                # if line contains loaded, print it
+                # if line contains memory, print it
+                if "Memory" in line  and "MemoryAccounting" not in line:
+                    s_memory = line.split()
+                    s_memory = s_memory[1]            
+                    print(s_memory)
+
                 if "Loaded" in line:
                     s_loaded = line.split()
+                    s_loaded = s_loaded[1]
                     print(s_loaded)
-
-                # if line contains memory, print it
-                if "Memory" in line:
-                    s_memory = line.split()
-                    print(s_memory)
 
                 # if line contains main, print it
                 if "Main" in line:
                     s_pid = line.split()
-                    print(s_pid)
+                    s_pid = s_pid[2]
+                    # print(s_pid)
 
                 # if line contains CPU, print it
                 if "CPU" in line:
                     s_cpu = line.split()
-                    print(s_cpu)
+                    s_cpu = s_cpu[1]
+                    # print(s_cpu)
 
         
-        service_meta = Services(single_service, s_loaded, s_active, s_pid, s_memory, s_cpu)
+        service_meta = Services(s_name, s_loaded, s_active, s_pid, s_memory, s_cpu)
         service_library.append(service_meta)
-
-    
-
-    # for service_l in service_library: 
-    #     print("I am printing from Service Library " + service_l.name)
